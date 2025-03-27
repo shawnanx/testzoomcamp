@@ -6,6 +6,16 @@ sources:
     schema: "{{ env_var('DBT_SCHEMA', 'natality_data') }}"
     tables:
       - name: birth_data
+        description: Raw birth records from national dataset
+        columns:
+          - name: unique_id
+          - name: dob_yy
+          - name: dob_date
+          - name: dbwt
+          - name: mager
+          - name: mager9
+          - name: meduc
+          - name: mrace6
 
 models:
   - name: stg_birth_data
@@ -35,17 +45,15 @@ models:
         description: Baby birth weight in grams
         tests:
           - not_null
-          - accepted_values:
-              min: 500
-              max: 6000
+          - dbt_utils.expression_is_true:
+              expression: "dbwt BETWEEN 500 AND 6000"
               severity: warn
 
       - name: mager
         description: Mother's exact age in years
         tests:
-          - accepted_values:
-              min: 15
-              max: 50
+          - dbt_utils.expression_is_true:
+              expression: "mager BETWEEN 15 AND 50"
               severity: warn
 
       - name: mager9
