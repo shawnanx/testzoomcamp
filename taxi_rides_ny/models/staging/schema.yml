@@ -1,12 +1,12 @@
 version: 2
 
 sources:
-  - name: staging
+  - name: natality
     database: "{{ env_var('DBT_DATABASE', 'natality-data-project-dez') }}"
     schema: "{{ env_var('DBT_SCHEMA', 'natality_data') }}"
     tables:
-      - name: birth_data
-        description: Raw birth records from national dataset
+      - name: natality_data  # Must match EXACT table name in BigQuery
+        description: "US Natality records"
         columns:
           - name: unique_id
           - name: dob_yy
@@ -14,8 +14,6 @@ sources:
           - name: dbwt
           - name: mager
           - name: mager9
-          - name: meduc
-          - name: mrace6
 
 models:
   - name: stg_birth_data

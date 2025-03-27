@@ -1,8 +1,9 @@
 SELECT
   unique_id,
-  dob_yy AS birth_year,
-  dob_date AS birth_date,
-  dbwt AS birth_weight_grams,
-  mager AS mother_age,
-  mager9 AS mother_age_group
-FROM {{ source('natality', 'birth_data') }}
+  CAST(dob_yy AS INT64) AS birth_year,  -- Explicit type casting
+  PARSE_DATE('%Y-%m-%d', dob_date) AS birth_date,  -- Ensure proper date type
+  CAST(dbwt AS INT64) AS birth_weight_grams,
+  CAST(mager AS INT64) AS mother_age,
+  CAST(mager9 AS INT64) AS mother_age_group
+FROM {{ source('natality', 'natality_data') }}  -- Matches source config
+WHERE dob_date IS NOT NULL  -- Basic data quality filter
