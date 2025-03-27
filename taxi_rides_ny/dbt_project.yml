@@ -39,7 +39,3 @@ models:
     # Staging layer - light transformations
     staging:
       +materialized: view
-    
-    # Core models - business logic
-    core:
-      +materialized: table  # Materialize as tables for performance
