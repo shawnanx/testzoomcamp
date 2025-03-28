@@ -1,19 +1,24 @@
-WITH latest_year AS (
+{{
+  config(
+    materialized='view'
+  )
+}}
+
+WITH latest_year_data AS (
   SELECT 
-    MAX(EXTRACT(YEAR FROM PARSE_DATE('%Y-%m-%d', dob_date)) AS latest_year
+    MAX(dob_yy) AS latest_year
   FROM {{ source('natality', 'natality_data') }}
 ),
 
 age_distribution AS (
   SELECT
-    CAST(mager9 AS INT64) AS age_group,
-    COUNT(*) AS birth_count,
+    mager9 AS age_group,
+    COUNT(*) AS count,
     ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) AS percentage
   FROM {{ source('natality', 'natality_data') }}
   WHERE
-    EXTRACT(YEAR FROM PARSE_DATE('%Y-%m-%d', dob_date)) = (SELECT latest_year FROM latest_year)
+    dob_yy = latest_year
     AND mager9 IS NOT NULL
-    AND CAST(mager9 AS INT64) BETWEEN 1 AND 9  -- Valid age group codes
   GROUP BY age_group
 )
 
