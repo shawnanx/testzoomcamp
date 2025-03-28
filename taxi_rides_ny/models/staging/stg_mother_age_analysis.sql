@@ -1,7 +1,6 @@
 {{
   config(
-    materialized='view',
-    schema='analytics'  # Optional: organize in separate schema
+    materialized='view'
   )
 }}
 
